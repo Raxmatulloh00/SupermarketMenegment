@@ -1,0 +1,207 @@
+﻿@page "/peoplerole"
+@using Microsoft.AspNetCore.Authorization;
+@using Microsoft.AspNetCore.Identity;
+@using WrbApp.Data;
+@using System.ComponentModel.DataAnnotations;
+@using System.Text.Json;
+@using System.ComponentModel;
+@inject WeatherForecastService weatherService
+@inject UsersService usersService
+@inject UserManegerService userMenegerServise
+@inject IMessageService messageService
+@inject NavigationManager navigation
+
+<h3>Add People</h3>
+@if (users != null)
+{
+	<table class="table">
+		<thead>
+			<tr>
+				<th>Login</th>
+				<th>Role</th>
+				<th>Action</th>
+			</tr>
+		</thead>
+		<tbody>
+			@foreach (var item in users)
+			{
+				<tr>
+					<td>@item.userName</td>
+					<td>
+						@if (item.roles.Count == 0)
+						{
+							<span>Not specified</span>
+						}
+						else
+						{
+							foreach (var role in item.roles)
+							{
+								<span>@role</span>
+								if (role != item.roles.Last())
+								{
+									<span>, </span>
+								}
+							}
+						}
+					</td>
+					<td>
+						<button @onclick="e=>OpenModel(item)" style="margin-right: 15px;" class="btn alert-info">Edit</button>
+						<button @onclick="e=>UserDelete(item.UserId)" class="btn alert-danger">Delete</button>
+					</td>
+
+				</tr>
+			}
+		</tbody>
+	</table>
+}
+<Button Type="primary" OnClick="@(()=>{ _visible = true; })">
+	Add People
+</Button>
+<Modal Title="@title"
+	   Visible="@_visible"
+	   OnOk="@HandleOk"
+	   OnCancel="@HandleCancel">
+
+	<div class="login-input">
+		<p>Login</p>
+		<input type="text" @bind-value="login" />
+	</div>
+	<div class="passwords">
+		<div class="first-password">
+			<p class="a">Password</p>
+			<input type="password" @bind-value="password" />
+		</div>
+		<div class="second-password">
+			<p class="a">Confirm Password</p>
+			<input type="password" @bind-value="confirmpasword" />
+		</div>
+	</div>
+	<p class="p">Role</p>
+	@if (roles != null)
+	{
+		@*<select @bind="role" class="form-control">
+	<option selected></option>
+	@foreach (var item in roles)
+	{
+	<option value="@item.Value">@item.Valueok</option>
+	}
+	</select>*@
+
+		@foreach (var item in roles)
+		{
+			<div>
+				<input @oninput="@(e=>AddToSelected(item.Key, (bool)e.Value))" type="checkbox" />
+				<label>@item.Value</label>
+			</div>
+		}
+	}
+</Modal>
+
+@code {
+	Dictionary<string, string> roles = new Dictionary<string, string>();
+	//Dictionary<string, string> user = new Dictionary<string, string>();
+	List<UsersList> users = new();
+	string title = "Add People";
+	bool _visible = false;
+	bool isChecked = false;
+	bool editing;
+	string? login;
+	string? password;
+	string confirmpasword;// 123456Ra!
+	string roleId;
+	string role;
+	string user;
+	string? updateUserId;
+
+	List<string> selectrole = new List<string>();
+	List<string> updaterole = new List<string>();
+
+	protected override async Task OnInitializedAsync()
+	{
+		roles = await weatherService.GetAllRoles();
+		users = await userMenegerServise.GetAllUser();
+
+		StateHasChanged();
+	}
+
+	async void UserDelete(string id)
+	{
+		await userMenegerServise.DelateUser(id);
+		users = new();
+		users = await userMenegerServise.GetAllUser();
+		StateHasChanged();
+	}
+	async void OpenModel(UsersList user)
+	{
+		login = user.userName;
+		updateUserId = user.UserId;
+		_visible = true;
+		editing = true;
+
+	}
+	void AddToSelected(string key, bool isChecked)
+	{
+		if (isChecked)
+		{
+			selectrole = selectrole ?? new();
+			selectrole?.Add(key);
+		}
+		else
+		{
+			selectrole?.Remove(key);
+		}
+	}
+
+	async Task HandleOk(MouseEventArgs e)
+	{
+		try
+		{
+			if (editing)
+			{
+				if (updateUserId != null && login != null && password != null && confirmpasword != null && selectrole.Count>0)
+				{
+					await userMenegerServise.Edit(updateUserId, login, password, confirmpasword, selectrole);
+					users = await userMenegerServise.GetAllUser();
+
+					_visible = false;
+				}
+				StateHasChanged();
+			}
+			else
+			{
+				if (password == confirmpasword)
+				{
+					var isSuccess = await usersService.CreateNewUser(login, password, selectrole);
+					if (isSuccess)
+					{
+						users = new();
+						users = await userMenegerServise.GetAllUser();
+						StateHasChanged();
+					}
+					Console.WriteLine(e);
+					_visible = false;
+				}
+				else
+				{
+					messageService.Error("ConfirmPasword is wrong!");
+				}
+			}
+
+		}
+		catch (Exception em)
+		{
+			Console.WriteLine(em.Message);
+		}
+	}
+
+	private void HandleCancel(MouseEventArgs e)
+	{
+		Console.WriteLine(e);
+		_visible = false;
+		login = null;
+		password = null;
+		selectrole = null;
+		confirmpasword = null;
+		navigation.NavigateTo(navigation.Uri, true);
+	}
+}

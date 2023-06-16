@@ -1,0 +1,10 @@
+﻿@page "/refresher/{url}"
+@inject NavigationManager navigationManager
+@code {
+	[Parameter]
+	public string url { get; set; }
+	protected override void OnInitialized()
+	{
+		navigationManager.NavigateTo(url);
+	}
+}

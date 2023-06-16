@@ -1,0 +1,41 @@
+﻿@inherits LayoutComponentBase
+@inject NavigationManager navManager
+
+<header class="site-header sticky-top py-1">
+    <nav class="container d-flex flex-column flex-md-row ">
+        <AuthorizeView Policy="AdminOnly">
+            <NavLink style="margin-right:50px; margin-top: 6px;" href="" Match="NavLinkMatch.All">
+                <span class="oi oi-home" aria-hidden="true"></span> Home
+            </NavLink>
+            <NavLink style="margin-right:50px; margin-top: 6px;" href="categories">
+                <span class="oi oi-list-rich" aria-hidden="true"></span> Categories
+            </NavLink>
+            <NavLink style="margin-right:50px; margin-top: 6px;" href="products">
+                <span class="oi oi-list-rich" aria-hidden="true"></span> Products
+            </NavLink>
+            <NavLink style="margin-right:50px; margin-top: 6px;" href="transaction">
+                <span class="oi oi-list-rich" aria-hidden="true"></span> Reports
+            </NavLink>
+            <NavLink style="margin-right:50px; margin-top: 6px;" href="peoplerole">
+                <span class="oi oi-plus" aria-hidden="true"></span> AddPeople
+            </NavLink>
+        </AuthorizeView>
+        <AuthorizeView Policy="CashierOnly">
+            <NavLink style="margin-left: 150px; margin-right:150px; margin-top: 6px;"  href="" Match="NavLinkMatch.All">
+                <span class="oi oi-home" aria-hidden="true"></span> Home
+            </NavLink>
+            <NavLink style="margin-right:150px; margin-top: 7px;" href="cashier_console">
+                <span class="oi oi-list-rich" aria-hidden="true"></span> Sell
+            </NavLink>
+        </AuthorizeView>
+        <nav class="d-flex flex-column flex-md-row justify-content-end">
+           <LoginDisplay></LoginDisplay>
+        </nav>
+    </nav>
+</header>
+
+<main class="content">
+    @Body
+</main>
+
+
