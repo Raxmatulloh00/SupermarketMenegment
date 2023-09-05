@@ -1,0 +1,263 @@
+﻿@page "/edithotel/{HotelId}"
+@inject ICityActions CityActions
+@inject IHotelActions HotelActions
+@inject NavigationManager NavigationManager
+@inject IConfiguration config
+@inject ModalService _modalService
+@inject IMessageService _message
+@inject ImageRepository imageRepository
+
+@if (hotel != null)
+{
+    <Microsoft.AspNetCore.Components.Forms.EditForm Model="hotel" OnSubmit="Submit">
+        <DataAnnotationsValidator></DataAnnotationsValidator>
+        <ValidationSummary></ValidationSummary>
+        <div class="from-group">
+            <div style="display: flex; justify-content:space-between;">
+                <label style="font-family: 'Bookman Old Style'" for="city">Image</label>
+                <Microsoft.AspNetCore.Components.Forms.InputFile id="files" OnChange="LoadFiles" />
+            </div>
+            <br />
+            <div style="display:flex; flex-direction:row; gap:10px; column-gap:20px;">
+                @foreach (var item in images)
+                {
+                    <div class="image-container" @onmouseleave="e=>HideDeleteButton(item.ImageId)" @onmouseover="e=>ShowDeleteButton(item.ImageId)">
+                        <img style="border: black 3px solid;" src="@item.ImageUrl" width="100" height="100" />
+                        <Button Class="delete-button" OnClick="()=>ShowDeleteConfirm(item)">
+                            <Icon Type="delete" Theme="outline" />
+                        </Button>
+                    </div>
+
+                }
+            </div>
+        </div>
+
+        <div class="from-group">
+            <label style="font-family: 'Bookman Old Style'" for="city">City Name</label>
+            <select id="city" @bind="hotel.CityConnctId" class="form-control">
+                <option selected></option>
+                @foreach (var item in cities)
+                {
+                    <option value="@item.CityId">@item.CityName</option>
+                }
+            </select>
+        </div>
+        <div class="from-group">
+            <label style="font-family: 'Bookman Old Style'" for="name">Hotel Name</label>
+            <InputText id="name" @bind-Value="hotel.HotelName" class="form-control"></InputText>
+        </div>
+        <div class="from-group">
+            <label style="font-family: 'Bookman Old Style'" for="name">Hotel Star</label>
+            <Rate  @bind-Value="@Star"></Rate>
+        </div>
+        <div class="from-group">
+            <label style="font-family: 'Bookman Old Style'" for="name">Hotel Star</label>
+            <Microsoft.AspNetCore.Components.Forms.InputNumber id="name" @bind-Value="hotel.HotelPrice" class="form-control"></Microsoft.AspNetCore.Components.Forms.InputNumber>
+        </div>
+        <div class="from-group">
+            <label style="font-family: 'Bookman Old Style'" for="name">Hotel Descriorion</label>
+            <TextArea id="name" @bind-Value="hotel.HotelDescription" class="form-control"></TextArea>
+        </div>
+    </Microsoft.AspNetCore.Components.Forms.EditForm>
+}
+
+
+
+<button type="submit" class="btn btn-primary" @onclick="Submit">Save</button>
+<button type="button" class="btn btn-primary" @onclick="OnCancel">Cancel</button>
+
+@code {
+    [Parameter]
+    public string HotelId { get; set; }
+    private Hotel hotel;
+    private decimal Star;
+    bool isDeleteButton;
+    int hoverId; 
+    string title = "Delete Image";
+    bool _visible = false;
+    private IEnumerable<City> cities;
+    List<About.Image> images = new List<About.Image>();
+    List<About.Image> newImages = new List<About.Image>();
+    List<About.Image> delImages = new List<About.Image>();
+
+    protected override void OnInitialized()
+    {
+        cities = CityActions.View();
+    }
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+        if (int.TryParse(this.HotelId, out int iHotelId))
+        {
+            var hot = HotelActions.GetHotelId(iHotelId);
+            this.hotel = new Hotel
+                {
+                    HotelId = hot.HotelId,
+                    CityConnctId = hot.CityConnctId,
+                    HotelName = hot.HotelName,
+                    HotelStar = hot.HotelStar,
+                    HotelPrice = hot.HotelPrice,
+                    HotelDescription = hot.HotelDescription,
+                    
+                };
+
+            Star = hotel.HotelStar;
+            images = imageRepository.GetByHotelId(iHotelId);
+        }
+    }
+
+    RenderFragment icon = @<Icon Type="exclamation-circle" Theme="outline"></Icon>;
+
+    private void ShowDeleteConfirm(About.Image image)
+    {
+        delImages.Clear();
+
+        _modalService.Confirm(new ConfirmOptions()
+            {
+                Title = "Are you sure delete this image?",
+                Icon = icon,
+                OnOk = e => { DeleteImage(image); StateHasChanged(); return Task.CompletedTask; },
+                OkType = "danger",
+            });
+    }
+
+    private void Submit()
+    {
+        hotel.HotelStar = int.Parse(Star.ToString());
+        foreach (var item in newImages)
+        {
+            item.HotelConnctId = hotel.HotelId;
+            imageRepository.AddImage(item);
+        }
+        foreach (var delItem in delImages)
+        {
+            imageRepository.DeleteImage(delItem.ImageId);
+            string path = Path.Combine(config.GetValue<string>("FileStorage")!, "uploadimages", delItem.ImageName);
+            File.Delete(path);
+        }
+
+        HotelActions.Update(this.hotel);
+        NavigationManager.NavigateTo("/hotel");
+
+        StateHasChanged();
+    }
+    private void OnCancel()
+    {
+        NavigationManager.NavigateTo("/hotel");
+    }
+
+    async Task LoadFiles(InputFileChangeEventArgs e)
+    {
+        long maxSize = 1024 * 1024 * 3;
+
+        foreach (var file in e.GetMultipleFiles())
+        {
+            try
+            {
+                var isJpgOrPng = file.Name.EndsWith("jpeg") || file.Name.EndsWith("png") || file.Name.EndsWith("jpg");
+
+                if (file.Size < maxSize)
+                {
+                    if (isJpgOrPng)
+                    {
+                        string newFileName = Path.ChangeExtension(Path.GetRandomFileName(), Path.GetExtension(file.Name));
+                        string path = Path.Combine(config.GetValue<string>("FileStorage")!, "uploadimages", newFileName);
+
+                        Directory.CreateDirectory(Path.Combine(config.GetValue<string>("FileStorage")!, "uploadimages"));
+
+                        await using FileStream fs = new(path, FileMode.Append);
+                        await file.OpenReadStream(maxSize).CopyToAsync(fs);
+
+                        About.Image image = new About.Image
+                            {
+                                ImageUrl = $"/uploadimages/{newFileName}",
+                                ImageName = newFileName,
+                            };
+                        newImages.Add(image);
+                        images.Add(image);
+                        //apply.PhotoPath = $"https://localhost:44349/uploadimages/{newFileName}";
+
+                    }
+                    else
+                        await _message.Error("Вы можете загружать только JPG/PNG файл!");
+                }
+                else
+                    await _message.Error("Вы не можете загружать файл более 3 мб!");
+            }
+            catch (Exception ex)
+            {
+                await _message.Error(ex.Message);
+            }
+        }
+    }
+    void ShowDeleteButton(int id)
+    {
+        hoverId = id;
+        isDeleteButton = true;
+        StateHasChanged();
+    }
+    void HideDeleteButton(int id)
+    {
+        hoverId = 0;
+        isDeleteButton = false;
+        StateHasChanged();
+    }
+    void DeleteImage(About.Image image)
+    {
+        images.Remove(image);
+        delImages.Add(image);
+
+        StateHasChanged();
+    }
+}
+
+        <style>
+
+    .image-container {
+        position: relative;
+        display: inline-block;
+    }
+
+    .delete-button {
+        display: none;
+        position: absolute;
+        top: 50px;
+        padding:5px;
+        right: 50px;
+        transform: translate(50%, -50%);
+        background-color: red;
+        color: white;
+        border: black 3px solid ;
+        border-radius: 10px;
+        width: 35px;
+        height: 35px;
+        cursor: pointer;
+    }
+
+    .delete-button:hover {
+            background-color: red;
+            color: white;
+            border: black 3px solid;
+        }
+    .delete-button p {
+        width: 100%;
+        height: auto;
+    }
+
+    .image-container:hover .delete-button {
+        display: block;
+    }
+
+    .image-container img {
+        transition: filter 0.3s ease-in-out;
+    }
+
+    .image-container:hover img {
+        filter: blur(2px);
+    }
+
+    .image-container:hover .delete-button img {
+        filter: none;
+    }
+        </style>

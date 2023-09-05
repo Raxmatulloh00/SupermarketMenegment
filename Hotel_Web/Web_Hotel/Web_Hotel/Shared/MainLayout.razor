@@ -1,0 +1,51 @@
+﻿@inherits LayoutComponentBase
+@inject NavigationManager NavigationManager 
+<PageTitle>World Travel</PageTitle>
+
+
+<header class="site-header sticky-top py-2">
+    <nav class="container d-flex flex-column flex-md-row justify-content-between">
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+                <span class="" aria-hidden="true"></span> About
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink onclick="Refresh" class="nav-link" href="adduser">
+                <span class="" aria-hidden="true"></span> Add User
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="country">
+                <span class="" aria-hidden="true"></span> Country
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="city">
+                <span class="" aria-hidden="true"></span> City
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="hotel">
+                <span class="" aria-hidden="true"></span> Hotel
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link">
+            <LoginDisplay></LoginDisplay>
+            </NavLink>
+        </div>
+    </nav>
+</header>
+
+<main class="px-4">
+    @Body
+</main>
+
+@code {
+
+    public void Refresh()
+    {
+        NavigationManager.NavigateTo(NavigationManager.Uri, true);
+    }
+}

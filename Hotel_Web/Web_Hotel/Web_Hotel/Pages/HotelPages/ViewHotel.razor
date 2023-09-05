@@ -1,0 +1,271 @@
+﻿    @page "/hotel"
+@inject NavigationManager NavigationManager
+@inject IHotelActions HotelActions
+@inject ICityActions CityActions
+@inject ImageRepository imageRepository
+@inject IConfiguration config
+@inject IJSRuntime js
+
+<h3>Hotel</h3>
+
+<div style="display:flex; flex-wrap:wrap; row-gap: 10px; column-gap: 10px; justify-content:center; align-items:center">
+
+
+        @foreach (var hotel in hotels)
+        {
+
+            <div class="card1" style="overflow: hidden;">
+                <div>
+                    @if (hotel?.Images.Count > 0)
+                    {
+                        <Carousel Autoplay="TimeSpan.FromSeconds(3)">
+                            @foreach (var item in hotel.Images)
+                            {
+                                <CarouselSlick>
+                                    <Image Src="@item.ImageUrl" Style="width: 319px; height: 230px;" />
+                                </CarouselSlick>
+                            }
+                        </Carousel>
+                    }
+                    else
+                    {
+                        <div>
+                            <Image Src="../image/images.jpg" Style="width: 319px; height: 230px;" />
+                        </div>
+                    }
+                </div>
+
+                <div style="padding: 10px;">
+                    <div style=" width:100%; height: 50px; margin-bottom: 25px;">
+                        @* <p style="font-size: 16px; margin-right: 50px"> <d style="font-weight: bold;">Hotel City: </d> @CityActions.GetCityId(hotel.CityConnctId).CityName</p>*@
+                        <p style="font-size: 16px;"> <d style=" font-weight: bold;">Hotel Name: </d>@hotel.HotelName</p>
+                        <p style="font-size: 16px;"><d style="font-weight: bold;"> Hotel Price: </d> $@hotel.HotelPrice</p>
+                    </div>
+                    <div style="display: flex; flex-direction: row; justify-content: space-between;">
+                        <button @onclick="@(() => OnClickEditHotel(hotel))" class="btn alert-info">Edit</button>
+                        <button @onclick="@(() => OnClickDeletHotel(hotel))" class="btn alert-danger">Delete</button>
+                        <a @onclick="@(()=> OpenModal(hotel))" class="btn btn-link">More About</a>
+
+                    </div>
+
+                </div>
+
+                @* <div style="display:flex;">
+            <div style="display:flex; margin-right:50px;">
+
+            <p style="font-size: 16px; margin-top:5px; margin-right: 10px"><d style="font-size: 18px; font-weight: bold;"> Hotel Star: </d> @hotel.HotelStar </p>
+            <Rate Count="hotel.HotelStar" DefaultValue="@hotel.HotelStar" Disabled></Rate>
+            </div>
+            <p style="font-size: 16px;"><d style="font-size: 18px; font-weight: bold;"> Hotel Price: </d> $@hotel.HotelPrice</p>
+            </div>
+            <p style="font-size: 16px;"><d style="font-size: 18px; font-weight: bold;">Descripton: </d> @hotel.HotelDescription</p>*@
+
+            </div>
+
+        }
+        
+    
+</div>
+
+
+<Modal Width="1000" Title="@title"
+       Visible="@_visible" 
+       Style="top: 20px"
+       OnOk="@HandleOk"
+       OnCancel="@HandleCancel">
+      
+    <div class="bag">
+
+    <div class="info">
+        <div class="cn-hp">
+            <p style="font-size: 16px; margin-right: 50px"> <d style="font-weight: bold;">Hotel City: </d> @CityActions.GetCityId(hotelDetails.CityConnctId).CityName</p>
+            <br />
+            <p style="font-size: 16px;"><d style="font-weight: bold;"> Hotel Price: </d> $@hotelDetails.HotelPrice</p>
+        </div>
+        <div class="imgs scroll">
+
+                @if(hotelDetails.Images.Count >0)
+                {
+                @foreach (var item in hotelDetails.Images)
+                {
+                    <Image Src="@item.ImageUrl" Style="width: 319px; height: 230px;" />
+                    }
+                }
+                else
+                {
+                        <Image Src="../image/images.jpg" Style="width: 319px; height: 230px;" />
+                }
+            </div>
+        <div class="hn-hs">
+            <p style="font-size: 16px;"> <d style=" font-weight: bold;">Hotel Name: </d>@hotelDetails.HotelName</p>
+            <br />
+
+            <div style="display:flex; margin-right:50px;">
+
+                <p style="font-size: 16px; margin-top:5px; margin-right: 10px"><d style="font-size: 18px; font-weight: bold;"> Hotel Star: </d> @hotelDetails.HotelStar </p>
+                <Stars StarCount="@rateValue"></Stars>
+                    @*<Rate @ref="rateControl" Count="5" @bind-Value="@rateValue"Disabled></Rate>*@
+            </div>
+        </div>
+    </div>
+    <div class="des">
+        <p style="font-size: 18px; font-weight: bold;">Descripton: </p>
+        <p style="font-size: 16px;">@hotelDetails.HotelDescription</p>
+
+    </div>
+    </div>
+    
+</Modal>
+
+
+<button @onclick="OnClickAddHotel" class="btn btn-primary">Add Hotel</button>
+
+
+@code {
+    private List<Hotel> hotels;
+    private  Hotel hotelDetails;
+    Carousel _carousel;
+    string title = "Hotel Info";
+    bool _visible = false;
+    int rateCount;
+    decimal rateValue;
+    Rate rateControl;
+    //Carousel carousel;
+
+    protected override void OnInitialized()
+    {
+        hotels = HotelActions.View().ToList();
+        foreach (var item in hotels)
+        {
+            item.Images = imageRepository.GetByHotelId(item.HotelId).ToList();
+        }
+    }
+
+    private void OnClickAddHotel()
+    {
+        NavigationManager.NavigateTo("/addhotel");
+    }
+
+    private void OnClickEditHotel(Hotel hotel)
+    {
+        NavigationManager.NavigateTo($"/edithotel/{hotel.HotelId}");
+    }
+
+    private void OnClickDeletHotel(Hotel hotel)
+    {
+        HotelActions.Delete(hotel.HotelId);
+        foreach (var item in hotel.Images)
+        {
+            string path = Path.Combine(config.GetValue<string>("FileStorage")!, "uploadimages", item.ImageName);
+            File.Delete(path);
+        }
+
+        NavigationManager.NavigateTo(NavigationManager.Uri, true);
+        StateHasChanged();
+    }
+
+    protected async void OpenModal(Hotel hotel)
+    {
+        hotelDetails = new About.Hotel();
+        hotelDetails = hotel;
+        if (rateControl != null)
+            rateControl.Count = hotel.HotelStar;
+        rateValue = hotel.HotelStar;
+
+        _visible = true;
+        //Task.Run(async () =>
+      
+        StateHasChanged();
+        //carousel.Next();
+    }
+
+
+    private void HandleOk(MouseEventArgs e)
+    {
+        Console.WriteLine(e);
+        _visible = false;
+    }
+
+    private void HandleCancel(MouseEventArgs e)
+    {
+        _visible = false;
+        StateHasChanged();
+    }
+}
+
+<style>
+    .card1 {
+        width: 319px;
+        height: 370px;
+        background-color: seashell;
+        box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+        /*background-image: linear-gradient(163deg, rgb(180, 180, 180) 0%, black 100%);*/
+        border-radius: 20px;
+        transition: all .3s;
+        margin-bottom: 15px;
+    }
+
+        .card1:hover {
+            box-shadow: rgba(0, 0, 0, 0.24) 5px 3px 5px;
+        }
+
+
+    .bag {
+    }
+    .info {
+        width: 100%;
+        height: 270px;
+        background-color:#222e50 ;
+        color: #edf7f6;
+        padding: 20px;
+        display: flex;
+        border-radius: 20px;
+        justify-content: space-between
+    }
+    
+
+    .scroll::-webkit-scrollbar {
+        width: 30px;
+        height: 8px;
+        
+    }
+
+    .scroll::-webkit-scrollbar-thumb {
+        border-radius: 20px;
+        background: #888;
+        margin-top: 15px;
+    }
+
+    .imgs * {
+        box-sizing: border-box;
+        padding: 0;
+        margin: 0;
+    }
+
+    .info .imgs {
+        display: flex;
+        overflow-x: scroll;
+        width: 320px;
+        height: 240px;
+        scroll-snap-type: x mandatory;
+        scroll-padding-top: 24px;
+        border-radius: 10px;
+        gap: 15px;
+    }
+    .cn-hp {
+        padding-top: 60px;
+        height:232px;
+
+    }
+    .hn-hs {
+        padding-top: 60px;
+        height: 232px;
+    }
+    .des {
+        display:inline;
+        padding:0px 20px 0 20px;
+        overflow:auto;
+
+    }
+</style>
+

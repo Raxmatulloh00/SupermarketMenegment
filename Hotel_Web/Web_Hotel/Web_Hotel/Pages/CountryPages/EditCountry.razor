@@ -1,0 +1,54 @@
+﻿@page "/editcountry/{CountryId}"
+@inject NavigationManager NavigationManager
+@inject ICountryActions CountryActions
+@if (country != null)
+{
+    <EditForm Model="country" OnValidSubmit="Submit">
+        <DataAnnotationsValidator></DataAnnotationsValidator>
+        <ValidationSummary></ValidationSummary>
+        <div class="from-group">
+            <label style="font-family: 'Bookman Old Style'" for="name">CountryName</label>
+            <InputText id="name" @bind-Value="country.CountryName" class="form-control"></InputText>
+        </div>
+        <br>
+        <button type="submit" class="btn btn-primary">Save</button>
+        <button type="button" class="btn btn-primary" @onclick="Cancel">Cancel</button>
+    </EditForm>
+}
+
+@code {
+    [Parameter]
+    public string CountryId { get; set; }
+
+    private Country country;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+    }
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+        if (int.TryParse(this.CountryId, out int iCountryId))
+        {
+            var coun = CountryActions.GetCountryId(iCountryId);
+            this.country = new Country
+                {
+                    CountryId = coun.CountryId,
+                    CountryName = coun.CountryName
+                };
+        }
+    }
+    private void Submit()
+    {
+        CountryActions.Update(this.country);
+        NavigationManager.NavigateTo("/country");
+    }
+    private void Cancel()
+    {
+        NavigationManager.NavigateTo("/country");
+
+    }
+
+}

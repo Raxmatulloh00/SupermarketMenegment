@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "0uyyo1rJNiAfGarjXT4BYiPswfNhaoI3drSzO/N8lakwT4a+kBuMK6z/Vwy127cn8JJSVseHyqoCCJw39Prm3w==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\raxma\\Csharp_Project\\Hotel_Web\\Web_Hotel\\TgBot\\TgBot.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\raxma\\.nuget\\packages\\newtonsoft.json\\13.0.1\\newtonsoft.json.13.0.1.nupkg.sha512",
+    "C:\\Users\\raxma\\.nuget\\packages\\telegram.bot\\19.0.0\\telegram.bot.19.0.0.nupkg.sha512"
+  ],
+  "logs": []
+}

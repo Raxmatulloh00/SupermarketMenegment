@@ -1,0 +1,398 @@
+﻿@page "/adduser"
+
+@inject RoleMenegerServise roleMenegerServise
+@inject UserMenegerServise userMenegerServise
+@inject NavigationManager navigation
+@inject IJSRuntime JSRuntime
+
+<div style="padding: 10px;">
+
+    <h3>Add People</h3>
+    @if (users != null)
+    {
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Login</th>
+                    <th>Role</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                @foreach (var item in users)
+                {
+                    <tr>
+                        <td>@item.userName</td>
+                        <td>
+                            @if (item.roles.Count == 0)
+                            {
+                                <span>Not specified</span>
+                            }
+                            else
+                            {
+                                foreach (var role in item.roles)
+                                {
+                                    <span>@role</span>
+                                    if (role != item.roles.Last())
+                                    {
+                                        <span>, </span>
+                                    }
+                                }
+                            }
+                        </td>
+                        <td>
+                            <button @onclick="e=>OpenModel(item)" style="margin-right: 15px;" class="btn alert-info">Edit</button>
+                            <button @onclick="e=>OpenMadel(item)" class="btn alert-danger">Delete</button>
+
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>
+<Button Type="primary" OnClick="@OpenWhenAdd">
+    Add User
+</Button>
+<Modal Title="@("Add User")"
+       Visible="@_visible"
+       OnOk="@HandleOk"
+       OnCancel="@HandleCancel">
+
+    <Form ValidateOnChange="true" Loading="loading" Model="@model"
+          LabelColSpan="8"
+          WrapperColSpan="16"
+          OnFinish="OnFinish"
+          OnFinishFailed="OnFinishFailed"
+    @ref="@_form">
+        <FormItem Label="Login">
+            <Input @bind-Value="@context.login" />
+        </FormItem>
+        <FormItem Label="Password">
+            <InputPassword ShowPassword="false" @bind-Value="@context.password" />
+        </FormItem>
+        <FormItem Label="Confirm Password">
+            <InputPassword ShowPassword="false" @bind-Value="@context.confirmpasword" />
+        </FormItem>
+    </Form>
+    <p class="p">Role</p>
+    @if (roles != null)
+    {
+        @foreach (var item in rolesss)
+        {
+            <div>
+                <input checked="@item._checked" @oninput="@(e=>AddToSelected(item.roleId, (bool)e.Value))" type="checkbox" />
+                <label>@item.roleName</label>
+            </div>
+        }
+    }
+</Modal>
+
+<Modal Title="@("Edit User")"
+       Visible="@isVisibleEdit"
+       OnOk="@OnFinishEdit"
+       OnCancel="@HandleCancel">
+
+    <Form ValidateOnChange="true" Loading="loading" Model="@model"
+          LabelColSpan="8"
+          WrapperColSpan="16"
+          OnFinishFailed="OnFinishFailed"
+    @ref="@_form">
+        <FormItem Label="Login">
+            <span style="font-family:Verdana; font-weight:bold;">@context.login</span>
+        </FormItem>
+    </Form>
+    <p class="p">Role</p>
+    @if (roles != null)
+    {
+        @foreach (var item in rolesss)
+        {
+            <div>
+                <input checked="@item._checked" @oninput="@(e=>AddToSelected(item.roleId, (bool)e.Value))" type="checkbox" />
+                <label>@item.roleName</label>
+            </div>
+        }
+    }
+</Modal>
+
+<Modal Title="@title"
+       Visible=_deletemodal
+       OnOk="deleteuser"
+       OnCancel="cancelDelete">
+    <h4 style="text-align: center; color:red; font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif">Delete User?</h4>
+    <p style="text-align:center;">Are you sure you want to delete <span style="font-family:cursive;font-weight:700;">"@login"</span>?</p>
+    <p style="text-align:center;">You can't undo this action</p>
+</Modal>
+
+
+
+@code {
+
+    Dictionary<string, string> roles = new Dictionary<string, string>();
+
+    List<string> selectrole = new List<string>();
+    List<string> updaterole = new List<string>();
+    List<UserList> users = new();
+    List<Rolesss> rolesss = new();
+
+    private Model model = new();
+    private EditContext editContext;
+
+    string title = "Delet User";
+    bool _visible = false;
+    string? login;
+    string? password;
+    string confirmpasword;// 123456Ra!
+    string roleId;
+    string role;
+    string user;
+    string? updateUserId;
+    private Form<Model> _form;
+    string? deletuserId;
+    bool _deletemodal = false;
+    bool isChecked = false;
+    bool editing;
+    bool loading = false;
+    bool isVisibleEdit = false;
+    void toggle(bool value) => loading = value;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        roles = await roleMenegerServise.GetAllRoles();
+        foreach (var item in roles)
+        {
+            var rolsdbl = new Rolesss()
+                {
+                    roleId = item.Key.ToString(),
+                    roleName = item.Value.ToString(),
+                    _checked = false
+                };
+            rolesss.Add(rolsdbl);
+
+        }
+        users = await userMenegerServise.GetAllUser();
+
+        editContext = new EditContext(model);
+
+
+        StateHasChanged();
+    }
+
+    async void OpenMadel(UserList users)
+    {
+        login = users.userName;
+        deletuserId = users.UserId;
+        _deletemodal = true;
+
+    }
+    void OpenWhenAdd()
+    {
+        selectrole = new();
+        foreach (var item in rolesss)
+        {
+            item._checked = false;
+        }
+        model = new Model();
+        _visible = true;
+        editing = false;
+        StateHasChanged();
+    }
+    void AddToSelected(string key, bool isChecked)
+    {
+        if (isChecked)
+        {
+            selectrole = selectrole ?? new();
+            selectrole?.Add(key);
+
+        }
+        else
+        {
+            selectrole?.Remove(key);
+        }
+    }
+
+    async void OpenModel(UserList user)
+    {
+        try
+        {
+            login = user.userName;
+            updateUserId = user.UserId;
+            model.login = user.userName;
+            isVisibleEdit = true;
+            editing = true;
+
+            if (rolesss != null && user.roles != null)
+            {
+                foreach (var item in user.roles)
+                {
+                    if (item == "Cashier")
+                    {
+                        rolesss.FirstOrDefault(f => f.roleId == "2")._checked = true;
+                    }
+                    if (item == "Admin")
+                    {
+                        rolesss.FirstOrDefault(f => f.roleId == "1")._checked = true;
+                    }
+                    selectrole = rolesss.Where(x => x._checked).Select(x => x.roleId).ToList();
+                }
+            }
+
+        }
+        catch (Exception)
+        {
+
+        }
+
+
+    }
+    void OnChangeRoles(string id)
+    {
+        selectrole.Add(id);
+        StateHasChanged();
+    }
+    void deleteuser()
+    {
+        if (deletuserId != null)
+        {
+            UserDelete(deletuserId);
+            _deletemodal = false;
+            StateHasChanged();
+        }
+    }
+
+    void cancelDelete()
+    {
+        _deletemodal = false;
+        navigation.NavigateTo(navigation.Uri, true);
+        StateHasChanged();
+    }
+
+    async void UserDelete(string id)
+    {
+        await userMenegerServise.DeleteUser(id);
+        users = new();
+        users = await userMenegerServise.GetAllUser();
+        StateHasChanged();
+    }
+
+    async Task HandleOk(MouseEventArgs e)
+    {
+        _form.Submit();
+
+    }
+
+    private void OnFinishFailed(EditContext editContext)
+    {
+        Console.WriteLine($"Failed:{JsonSerializer.Serialize(model)}");
+    }
+    async Task OnFinishEdit()
+    {
+        await userMenegerServise.Edit(updateUserId, login, selectrole);
+        users = await userMenegerServise.GetAllUser();
+        isVisibleEdit = false;
+        selectrole = new();
+        navigation.NavigateTo(navigation.Uri, true);
+
+        StateHasChanged();
+    }
+
+    async Task OnFinish(EditContext editContext)
+    {
+        login = model.login;
+        password = model.password;
+        confirmpasword = model.confirmpasword;
+        try
+        {
+            if (editing)
+            {
+                if (updateUserId != null && login != null && password != null && confirmpasword != null && selectrole.Count >= 0 && confirmpasword == password)
+                {
+                    await userMenegerServise.Edit(updateUserId, login, selectrole);
+                    users = await userMenegerServise.GetAllUser();
+                    _visible = false;
+                }
+
+                StateHasChanged();
+            }
+            else
+            {
+                if (password == confirmpasword)
+                {
+                    var isSuccess = await userMenegerServise.CreateNewUser(login, password, selectrole);
+                    if (isSuccess)
+                    {
+                        users = new();
+                        users = await userMenegerServise.GetAllUser();
+
+                    }
+                    foreach (var item in rolesss)
+                    {
+                        item._checked = false;
+                    }
+                    _visible = false;
+                    navigation.NavigateTo(navigation.Uri, true);
+                    StateHasChanged();
+                }
+
+            }
+
+        }
+        catch (Exception em)
+        {
+            Console.WriteLine(em.Message);
+        }
+        Console.WriteLine("e");
+        _visible = false;
+        StateHasChanged();
+    }
+
+
+    private void HandleCancel(MouseEventArgs e)
+    {
+
+        if (editing)
+        {
+            Console.WriteLine(e);
+            _visible = false;
+            isVisibleEdit = false;
+        }
+        else
+        {
+            login = null;
+            password = null;
+            selectrole = null;
+            confirmpasword = null;
+            navigation.NavigateTo(navigation.Uri, true);
+
+        }
+        foreach (var item in rolesss)
+        {
+            item._checked = false;
+        }
+    }
+
+    public class Rolesss
+    {
+        public string roleId { get; set; }
+        public string roleName { get; set; }
+        public bool _checked { get; set; }
+    }
+
+    private class Model
+    {
+        [Required]
+        [Display(Name = "First Name")]
+        public string login { get; set; }
+        [Required]
+        [MinLength(6, ErrorMessage = "Password must be at least 6 characters")]
+        public string password { get; set; }
+
+        [Required]
+        [CompareProperty("password")]
+        [Display(Name = "Confirm Password")]
+        public string confirmpasword { get; set; }
+
+    }
+}

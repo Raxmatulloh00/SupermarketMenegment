@@ -1,0 +1,312 @@
+{
+  "format": 1,
+  "restore": {
+    "C:\\Users\\raxma\\Csharp_Project\\Hotel_Web\\Web_Hotel\\Web_Hotel\\Web_Hotel.csproj": {}
+  },
+  "projects": {
+    "C:\\Users\\raxma\\Csharp_Project\\Hotel_Web\\Web_Hotel\\About\\About.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\raxma\\Csharp_Project\\Hotel_Web\\Web_Hotel\\About\\About.csproj",
+        "projectName": "About",
+        "projectPath": "C:\\Users\\raxma\\Csharp_Project\\Hotel_Web\\Web_Hotel\\About\\About.csproj",
+        "packagesPath": "C:\\Users\\raxma\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\raxma\\Csharp_Project\\Hotel_Web\\Web_Hotel\\About\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\raxma\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net6.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net6.0": {
+            "targetAlias": "net6.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net6.0": {
+          "targetAlias": "net6.0",
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.400\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "C:\\Users\\raxma\\Csharp_Project\\Hotel_Web\\Web_Hotel\\DataStore.SQL\\DataStore.SQL.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\raxma\\Csharp_Project\\Hotel_Web\\Web_Hotel\\DataStore.SQL\\DataStore.SQL.csproj",
+        "projectName": "DataStore.SQL",
+        "projectPath": "C:\\Users\\raxma\\Csharp_Project\\Hotel_Web\\Web_Hotel\\DataStore.SQL\\DataStore.SQL.csproj",
+        "packagesPath": "C:\\Users\\raxma\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\raxma\\Csharp_Project\\Hotel_Web\\Web_Hotel\\DataStore.SQL\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\raxma\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net6.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net6.0": {
+            "targetAlias": "net6.0",
+            "projectReferences": {
+              "C:\\Users\\raxma\\Csharp_Project\\Hotel_Web\\Web_Hotel\\About\\About.csproj": {
+                "projectPath": "C:\\Users\\raxma\\Csharp_Project\\Hotel_Web\\Web_Hotel\\About\\About.csproj"
+              },
+              "C:\\Users\\raxma\\Csharp_Project\\Hotel_Web\\Web_Hotel\\UseCases\\UseCases.csproj": {
+                "projectPath": "C:\\Users\\raxma\\Csharp_Project\\Hotel_Web\\Web_Hotel\\UseCases\\UseCases.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net6.0": {
+          "targetAlias": "net6.0",
+          "dependencies": {
+            "Microsoft.AspNetCore.Identity.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[6.0.21, )"
+            },
+            "Microsoft.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[7.0.9, )"
+            },
+            "Microsoft.EntityFrameworkCore.Design": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[7.0.9, )"
+            },
+            "Microsoft.EntityFrameworkCore.SqlServer": {
+              "target": "Package",
+              "version": "[7.0.9, )"
+            },
+            "Microsoft.EntityFrameworkCore.Tools": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[7.0.9, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.400\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "C:\\Users\\raxma\\Csharp_Project\\Hotel_Web\\Web_Hotel\\UseCases\\UseCases.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\raxma\\Csharp_Project\\Hotel_Web\\Web_Hotel\\UseCases\\UseCases.csproj",
+        "projectName": "UseCases",
+        "projectPath": "C:\\Users\\raxma\\Csharp_Project\\Hotel_Web\\Web_Hotel\\UseCases\\UseCases.csproj",
+        "packagesPath": "C:\\Users\\raxma\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\raxma\\Csharp_Project\\Hotel_Web\\Web_Hotel\\UseCases\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\raxma\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net6.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net6.0": {
+            "targetAlias": "net6.0",
+            "projectReferences": {
+              "C:\\Users\\raxma\\Csharp_Project\\Hotel_Web\\Web_Hotel\\About\\About.csproj": {
+                "projectPath": "C:\\Users\\raxma\\Csharp_Project\\Hotel_Web\\Web_Hotel\\About\\About.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net6.0": {
+          "targetAlias": "net6.0",
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.400\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "C:\\Users\\raxma\\Csharp_Project\\Hotel_Web\\Web_Hotel\\Web_Hotel\\Web_Hotel.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\raxma\\Csharp_Project\\Hotel_Web\\Web_Hotel\\Web_Hotel\\Web_Hotel.csproj",
+        "projectName": "Web_Hotel",
+        "projectPath": "C:\\Users\\raxma\\Csharp_Project\\Hotel_Web\\Web_Hotel\\Web_Hotel\\Web_Hotel.csproj",
+        "packagesPath": "C:\\Users\\raxma\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\raxma\\Csharp_Project\\Hotel_Web\\Web_Hotel\\Web_Hotel\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\raxma\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net6.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net6.0": {
+            "targetAlias": "net6.0",
+            "projectReferences": {
+              "C:\\Users\\raxma\\Csharp_Project\\Hotel_Web\\Web_Hotel\\About\\About.csproj": {
+                "projectPath": "C:\\Users\\raxma\\Csharp_Project\\Hotel_Web\\Web_Hotel\\About\\About.csproj"
+              },
+              "C:\\Users\\raxma\\Csharp_Project\\Hotel_Web\\Web_Hotel\\DataStore.SQL\\DataStore.SQL.csproj": {
+                "projectPath": "C:\\Users\\raxma\\Csharp_Project\\Hotel_Web\\Web_Hotel\\DataStore.SQL\\DataStore.SQL.csproj"
+              },
+              "C:\\Users\\raxma\\Csharp_Project\\Hotel_Web\\Web_Hotel\\UseCases\\UseCases.csproj": {
+                "projectPath": "C:\\Users\\raxma\\Csharp_Project\\Hotel_Web\\Web_Hotel\\UseCases\\UseCases.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net6.0": {
+          "targetAlias": "net6.0",
+          "dependencies": {
+            "AntDesign": {
+              "target": "Package",
+              "version": "[0.15.3, )"
+            },
+            "Microsoft.AspNetCore.Identity.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[6.0.21, )"
+            },
+            "Microsoft.AspNetCore.Identity.UI": {
+              "target": "Package",
+              "version": "[6.0.21, )"
+            },
+            "Microsoft.EntityFrameworkCore.Design": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[7.0.9, )"
+            },
+            "Microsoft.EntityFrameworkCore.SqlServer": {
+              "target": "Package",
+              "version": "[7.0.9, )"
+            },
+            "Microsoft.EntityFrameworkCore.Tools": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[7.0.9, )"
+            },
+            "Microsoft.VisualStudio.Web.CodeGeneration.Design": {
+              "target": "Package",
+              "version": "[6.0.16, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.AspNetCore.App": {
+              "privateAssets": "none"
+            },
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.400\\RuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}

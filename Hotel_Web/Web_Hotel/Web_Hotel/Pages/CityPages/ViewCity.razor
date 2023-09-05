@@ -1,0 +1,60 @@
+﻿@page "/city"
+@inject NavigationManager NavigationManager
+@inject ICityActions CityActions
+@inject ICountryActions CountryActions
+<h3>City</h3>
+
+@if (cities != null)
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Country Name</th>
+                <th>City Name</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var city in cities)
+            {
+                <tr>
+                    <td>@CountryActions.GetCountryId(city.CountryConnectId.Value).CountryName</td>
+                    <td>@city.CityName</td>
+                    <td>
+                        <button @onclick="@(() => OnClickEditCity(city))" class="btn alert-info">Edit</button>
+                        <button @onclick="@(() => OnClickDeletCity(city.CityId))" class="btn alert-danger">Delete</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+<br />
+<button type="button" @onclick="OnClickAddCity" class="btn btn-primary">Add City</button>
+
+@code {
+    private IEnumerable<City> cities;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        cities = CityActions.View();
+    }
+
+    private void OnClickAddCity()
+    {
+        NavigationManager.NavigateTo("/addcity");
+    }
+
+    private void OnClickEditCity(City city)
+    {
+        NavigationManager.NavigateTo($"/editcities/{city.CityId}");
+    }
+
+    private void OnClickDeletCity(int cityid)
+    {
+        CityActions.Delete(cityid);
+        NavigationManager.NavigateTo(NavigationManager.Uri, true);
+
+    }
+}

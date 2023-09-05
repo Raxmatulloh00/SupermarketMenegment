@@ -1,0 +1,136 @@
+﻿    @page "/addhotel"
+@inject NavigationManager NavigationManager
+@inject IHotelActions HotelActions
+@inject ICityActions CityActions
+@inject IConfiguration config
+@inject IMessageService _message
+@inject ImageRepository imageRepository
+
+<h3>AddHotel</h3>
+@if (hotel != null)
+{
+    <Microsoft.AspNetCore.Components.Forms.EditForm Model="hotel" OnSubmit="Submit">
+        <DataAnnotationsValidator></DataAnnotationsValidator>
+        <ValidationSummary></ValidationSummary>
+        <div class="from-group">
+            <div style="display:flex; justify-content:space-between">
+            <label style="font-family: 'Bookman Old Style'" for="city">Image</label>
+            <Microsoft.AspNetCore.Components.Forms.InputFile id="files" OnChange="LoadFiles" />
+            </div>
+            @foreach (var item in images)
+            {
+                <img src="@item.ImageUrl" width="100" height="100" style="border: black 3px solid; margin-right: 10px; margin-bottom: 7px" />
+              
+            }
+        </div>
+        <div class="from-group">
+            <label style="font-family: 'Bookman Old Style'" for="city">City Name</label>
+            <select id="city" @bind="hotel.CityConnctId" class="form-control">
+                <option selected></option>
+                @foreach (var item in city)
+                {
+                    <option value="@item.CityId">@item.CityName</option>
+                }
+            </select>
+        </div>
+        <div class="from-group">
+            <label style="font-family: 'Bookman Old Style'" for="name">Hotel Name</label>
+            <InputText id="name" @bind-Value="hotel.HotelName" class="form-control"></InputText>
+        </div>
+        <div class="from-group">
+            <label style="font-family: 'Bookman Old Style'" for="name">Hotel Star</label>
+            <Rate @bind-Value="@star"></Rate>
+
+            @*<Microsoft.AspNetCore.Components.Forms.InputNumber id="name" @bind-Value="hotel.HotelStar" class="form-control"></Microsoft.AspNetCore.Components.Forms.InputNumber>*@
+        </div>
+        <div class="from-group">
+            <label style="font-family: 'Bookman Old Style'" for="name">Hotel Price</label>
+            <Microsoft.AspNetCore.Components.Forms.InputNumber id="name" @bind-Value="hotel.HotelPrice" class="form-control"></Microsoft.AspNetCore.Components.Forms.InputNumber>
+        </div>
+        <div class="from-group">
+            <label style="font-family: 'Bookman Old Style'" for="name">Hotel Descriorion</label>
+            <TextArea id="name" @bind-Value="hotel.HotelDescription" class="form-control"></TextArea>
+        </div>
+    </Microsoft.AspNetCore.Components.Forms.EditForm>
+
+}
+<button type="submit" class="btn btn-primary" @onclick="Submit">Save</button>
+<button type="button" class="btn btn-primary" @onclick="Cancle">Cancel</button>
+
+@code {
+
+    List<About.Image> images = new List<About.Image>();
+    private Hotel hotel;
+
+    private decimal star;
+    private IEnumerable<City> city;
+    int hotelIdForImages;
+
+    protected override void OnInitialized()
+    {
+        hotel = new Hotel();
+        city = CityActions.View();
+    }
+
+    private void Submit()
+    {
+        hotel.HotelStar = int.Parse(star.ToString());
+        hotelIdForImages = HotelActions.Add(hotel);
+        foreach (var item in images)
+        {
+            item.HotelConnctId = hotelIdForImages;
+            imageRepository.AddImage(item);
+        }
+        NavigationManager.NavigateTo("/hotel");
+    }
+
+    private void Cancle()
+    {
+        NavigationManager.NavigateTo("/hotel");
+
+    }
+
+    async Task LoadFiles(InputFileChangeEventArgs e)
+    {
+        long maxSize = 1024 * 1024 * 3;
+
+        foreach (var file in e.GetMultipleFiles())
+        {
+            try
+            {
+                var isJpgOrPng = file.Name.EndsWith("jpeg") || file.Name.EndsWith("png") || file.Name.EndsWith("jpg");
+
+                if (file.Size < maxSize)
+                {
+                    if (isJpgOrPng)
+                    {
+                        string newFileName = Path.ChangeExtension(Path.GetRandomFileName(), Path.GetExtension(file.Name));
+                        string path = Path.Combine(config.GetValue<string>("FileStorage")!, "uploadimages", newFileName);
+
+                        Directory.CreateDirectory(Path.Combine(config.GetValue<string>("FileStorage")!, "uploadimages"));
+
+                        await using FileStream fs = new(path, FileMode.Append);
+                        await file.OpenReadStream(maxSize).CopyToAsync(fs);
+
+                        About.Image image = new About.Image
+                        {
+                                ImageUrl = $"/uploadimages/{newFileName}",
+                                ImageName = newFileName,
+                        };
+                        images.Add(image);
+                        //apply.PhotoPath = $"https://localhost:44349/uploadimages/{newFileName}";
+
+                    }
+                    else
+                        await _message.Error("Вы можете загружать только JPG/PNG файл!");
+                }
+                else
+                    await _message.Error("Вы не можете загружать файл более 3 мб!");
+            }
+            catch (Exception ex)
+            {
+                await _message.Error(ex.Message);
+            }
+        }
+    }
+}

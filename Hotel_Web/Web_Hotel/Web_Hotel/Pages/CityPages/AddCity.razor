@@ -1,0 +1,51 @@
+﻿@page "/addcity"
+@inject NavigationManager NavigationManager
+@inject ICityActions CityActions
+@inject ICountryActions CountryActions
+@if (city != null)
+{
+    <EditForm Model="city" OnSubmit="Submit">
+        <DataAnnotationsValidator></DataAnnotationsValidator>
+        <ValidationSummary></ValidationSummary>
+
+        <div class="from-group">
+            <label style="font-family: 'Bookman Old Style'" for="country">County Name</label>
+            <select id="country" @bind="city.CountryConnectId" class="form-control">
+                <option selected></option>
+                @foreach (var item in country)
+                {
+                    <option value="@item.CountryId">@item.CountryName</option>
+                }
+            </select>
+        </div>
+
+        <div class="from-group">
+            <label style="font-family: 'Bookman Old Style'" for="name">City Name</label>
+            <InputText id="name" @bind-Value="city.CityName" class="form-control"></InputText>
+        </div>
+        <br>
+        <button type="submit" class="btn btn-primary">Save</button>
+        <button type="button" class="btn btn-primary" @onclick="Cancel">Cancel</button>
+    </EditForm>
+}
+
+@code {
+    private City city;
+    private IEnumerable<Country> country;
+
+    protected override void OnInitialized()
+    {
+        city = new City();
+        country = CountryActions.View();
+    }
+
+    private void Submit()
+    {
+        CityActions.Add(city);
+        NavigationManager.NavigateTo("/city");
+    }
+    private void Cancel()
+    {
+        NavigationManager.NavigateTo("/city");
+    }
+}

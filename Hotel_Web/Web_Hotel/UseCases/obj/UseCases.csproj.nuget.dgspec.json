@@ -1,0 +1,122 @@
+{
+  "format": 1,
+  "restore": {
+    "C:\\Users\\raxma\\Csharp_Project\\Hotel_Web\\Web_Hotel\\UseCases\\UseCases.csproj": {}
+  },
+  "projects": {
+    "C:\\Users\\raxma\\Csharp_Project\\Hotel_Web\\Web_Hotel\\About\\About.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\raxma\\Csharp_Project\\Hotel_Web\\Web_Hotel\\About\\About.csproj",
+        "projectName": "About",
+        "projectPath": "C:\\Users\\raxma\\Csharp_Project\\Hotel_Web\\Web_Hotel\\About\\About.csproj",
+        "packagesPath": "C:\\Users\\raxma\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\raxma\\Csharp_Project\\Hotel_Web\\Web_Hotel\\About\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\raxma\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net6.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net6.0": {
+            "targetAlias": "net6.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net6.0": {
+          "targetAlias": "net6.0",
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.400\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "C:\\Users\\raxma\\Csharp_Project\\Hotel_Web\\Web_Hotel\\UseCases\\UseCases.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\raxma\\Csharp_Project\\Hotel_Web\\Web_Hotel\\UseCases\\UseCases.csproj",
+        "projectName": "UseCases",
+        "projectPath": "C:\\Users\\raxma\\Csharp_Project\\Hotel_Web\\Web_Hotel\\UseCases\\UseCases.csproj",
+        "packagesPath": "C:\\Users\\raxma\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\raxma\\Csharp_Project\\Hotel_Web\\Web_Hotel\\UseCases\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\raxma\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net6.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net6.0": {
+            "targetAlias": "net6.0",
+            "projectReferences": {
+              "C:\\Users\\raxma\\Csharp_Project\\Hotel_Web\\Web_Hotel\\About\\About.csproj": {
+                "projectPath": "C:\\Users\\raxma\\Csharp_Project\\Hotel_Web\\Web_Hotel\\About\\About.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net6.0": {
+          "targetAlias": "net6.0",
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.400\\RuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}
